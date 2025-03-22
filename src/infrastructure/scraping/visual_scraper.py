@@ -1,5 +1,7 @@
 import time
 import json
+import os
+import subprocess
 from typing import List, Dict, Optional
 from loguru import logger
 from selenium import webdriver
@@ -20,24 +22,24 @@ class VisualScraper:
     def _initialize_driver(self):
         """Initialize Chrome driver with options to bypass SSL errors"""
         options = Options()
-        # Options to fix SSL handshake errors
+        # Add more aggressive options to ignore SSL errors
         options.add_argument("--ignore-ssl-errors=yes")
         options.add_argument("--ignore-certificate-errors")
         options.add_argument("--allow-insecure-localhost")
-
-        # Additional useful options
         options.add_argument("--disable-web-security")
+        options.add_argument("--allow-running-insecure-content")
         options.add_argument("--disable-gpu")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-
-        # Optional: Uncomment if you want to run headless
-        # options.add_argument('--headless')
+        # Set SSL protocol version
+        options.add_argument("--ssl-version-max=tls1.3")
+        options.add_argument("--ssl-version-min=tls1.2")
 
         try:
             driver = webdriver.Chrome(
                 service=Service(ChromeDriverManager().install()), options=options
             )
+            logger.info("Chrome driver initialized successfully")
             return driver
         except Exception as e:
             logger.error(f"Failed to initialize Chrome driver: {str(e)}")
@@ -59,6 +61,57 @@ class VisualScraper:
             logger.error(f"Could not parse price: {price_text}")
             return 0.0
 
+    def scroll_page(self, scroll_count=3, scroll_pause_time=2):
+        """Scroll down the page a few times with pauses"""
+        if not self.driver:
+            logger.error("Driver not initialized, cannot scroll")
+            return
+
+        try:
+            for i in range(scroll_count):
+                # Execute JavaScript to scroll down
+                self.driver.execute_script("window.scrollBy(0, 800);")
+                logger.info(f"Scrolled down {i+1}/{scroll_count}")
+                # Pause to allow page to load
+                time.sleep(scroll_pause_time)
+        except Exception as e:
+            logger.error(f"Error scrolling the page: {str(e)}")
+
+    def save_and_open_results(self, listings: List[Dict], query: str):
+        """Save scraping results to a text file and open it"""
+        if not listings:
+            logger.warning("No results to save")
+            return
+
+        # Create a formatted string with the results
+        current_time = time.strftime("%Y%m%d-%H%M%S")
+        filename = f"olx_search_{query.replace(' ', '_')}_{current_time}.txt"
+
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(f"OLX Search Results for '{query}' - {len(listings)} items found\n")
+            f.write("=" * 80 + "\n\n")
+
+            for i, item in enumerate(listings, 1):
+                f.write(f"{i}. {item.get('title', 'Unknown Title')}\n")
+                f.write(f"   Price: {item.get('price', 'N/A')}\n")
+                f.write(f"   Link: {item.get('link', 'N/A')}\n")
+                if item.get("image_url"):
+                    f.write(f"   Image: {item.get('image_url')}\n")
+                f.write(f"   ID: {item.get('id', 'N/A')}\n")
+                f.write("\n")
+
+        # Open the file with the default application
+        try:
+            if os.name == "nt":  # Windows
+                os.startfile(filename)
+            elif os.name == "posix":  # Linux, Mac
+                subprocess.call(("xdg-open", filename))
+
+            logger.info(f"Results saved to {filename} and opened")
+        except Exception as e:
+            logger.error(f"Error opening the results file: {str(e)}")
+            logger.info(f"Results saved to {filename}")
+
     def scrape_olx_with_selenium(self, query: str, max_results: int = 20) -> List[Dict]:
         """Scrape OLX using Selenium to bypass SSL and other issues"""
         search_url = f"{self.base_url}/brasil?q={query.replace(' ', '+')}"
@@ -70,11 +123,26 @@ class VisualScraper:
             return []
 
         try:
-            # Load the page
-            self.driver.get(search_url)
+            # Load the page with retry logic for SSL errors
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    self.driver.get(search_url)
+                    break
+                except Exception as e:
+                    if attempt < max_retries - 1:
+                        logger.warning(
+                            f"Attempt {attempt+1} failed, retrying: {str(e)}"
+                        )
+                        time.sleep(5)
+                    else:
+                        raise
 
             # Wait for page to load completely
             time.sleep(10)
+
+            # Scroll down to load more content
+            self.scroll_page()
 
             # Extract listings from JSON data in the page
             json_data = None
@@ -113,6 +181,10 @@ class VisualScraper:
                                 logger.error(f"Error parsing ad from JSON: {str(e)}")
 
                         logger.info(f"Encontrados {len(listings)} anúncios no JSON")
+
+                        # Save and open the results
+                        self.save_and_open_results(listings, query)
+
                         return listings
             except Exception as e:
                 logger.error(f"Error extracting JSON data with Selenium: {str(e)}")
@@ -168,6 +240,10 @@ class VisualScraper:
                     logger.error(f"Error parsing product element: {str(e)}")
 
             logger.info(f"Encontrados {len(listings)} anúncios no HTML")
+
+            # Save and open the results
+            self.save_and_open_results(listings, query)
+
             return listings
 
         except Exception as e:
