@@ -1,35 +1,18 @@
-from src.infrastructure.scraping.olx_scraper import OLXScraper
-
+from visual_scraper import scrape_olx_with_selenium
 
 def main():
-    # Create the scraper
-    scraper = OLXScraper()
-
-    # Test searching for products
-    search_query = "iphone"
-    print(f"Searching for: {search_query}")
-
-    listings = scraper.scrape_product_listings(search_query, max_results=5)
-
-    # Display results
-    print(f"Found {len(listings)} products:")
-    for i, product in enumerate(listings, 1):
-        print(f"{i}. {product['title']}")
-        print(f"   Price: {product['price']}")
-        print(f"   URL: {product['link']}")
-        print()
-
-    # If we have results, test getting details for the first one
-    if listings:
-        first_product_url = listings[0]["link"]
-        print(f"Getting details for: {first_product_url}")
-
-        details = scraper.scrape_product_details(first_product_url)
-
-        print("\nProduct Details:")
-        for key, value in details.items():
-            print(f"{key}: {value}")
-
+    query = input("Digite o termo de busca (ex: iphone): ")
+    if not query:
+        query = "iphone"
+    
+    print(f"Searching for: {query}")
+    results = scrape_olx_with_selenium(query, headless=False)
+    
+    print(f"Found {len(results)} products:")
+    
+    # O navegador permanecerá aberto para visualização
+    if results:
+        input("Pressione Enter para fechar o navegador...")
 
 if __name__ == "__main__":
     main()
