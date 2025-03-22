@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "telegram-bot"
+version = "0.1.0"
+description = "Um bot simples para Telegram que responde a comandos."
+authors = ["Seu Nome <seuemail@exemplo.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-telegram-bot = "^13.7"
+python-dotenv = "^0.19.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2"
+pytest-cov = "^2.12"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

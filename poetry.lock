@@ -1,0 +1,5 @@
+# Este arquivo é gerado automaticamente pelo Poetry e contém as dependências do projeto. 
+# Para gerar o conteúdo deste arquivo, execute o seguinte comando no terminal:
+# poetry lock
+
+# O conteúdo do arquivo poetry.lock será gerado automaticamente com base nas dependências especificadas no pyproject.toml.
