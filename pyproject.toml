@@ -1,19 +1,37 @@
 [tool.poetry]
-name = "telegram-bot"
+name = "price-monitor"
 version = "0.1.0"
-description = "Um bot simples para Telegram que responde a comandos."
-authors = ["Seu Nome <seuemail@exemplo.com>"]
+description = "Bot de Telegram que roda em background monitorando chamadas"
+authors = ["Seu Nome <seu.email@exemplo.com>"]
 license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-python-telegram-bot = "^13.7"
-python-dotenv = "^0.19.1"
+python = "^3.9"
+python-telegram-bot = "^20.8"
+python-dotenv = "^1.0.0"
+loguru = "^0.7.2"
 
-[tool.poetry.dev-dependencies]
-pytest = "^6.2"
-pytest-cov = "^2.12"
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.7.0"
+isort = "^5.12.0"
+mypy = "^1.5.1"
+pytest-cov = "^4.1.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
