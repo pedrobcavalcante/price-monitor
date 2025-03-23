@@ -11,7 +11,10 @@ logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Envia uma mensagem quando o comando /start é recebido."""
-    await update.message.reply_text("Olá! Eu sou um bot. Como posso ajudar você?")
+    if update.message:
+        await update.message.reply_text("Olá! Eu sou um bot. Como posso ajudar você?")
+    else:
+        logger.warning("Mensagem de atualização não encontrada.")
 
 
 def main() -> None:
