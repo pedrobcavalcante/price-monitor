@@ -1,10 +1,21 @@
 from telegram import Update
 from telegram.ext import CommandHandler, CallbackContext
+from datetime import datetime
+from loguru import logger
 
-def start(update: Update, context: CallbackContext) -> None:
-    """Envia uma mensagem quando o comando /start é recebido."""
-    update.message.reply_text('Olá! Eu sou um bot. Como posso ajudar você?')
 
-def register_handlers(dispatcher) -> None:
-    """Registra os manipuladores de comandos no dispatcher."""
-    dispatcher.add_handler(CommandHandler("start", start))
+class StartCommandUseCase:
+    def execute(self, user_id: int, user_name: str) -> str:
+        logger.info(f"Usuário {user_id} iniciou o bot")
+
+        user = User(id=user_id, name=user_name, first_access=datetime.now())
+
+        return f"Olá, {user.name}! Bem-vindo ao bot de monitoramento de preços."
+
+    def start(self, update: Update, context: CallbackContext) -> None:
+        """Envia uma mensagem quando o comando /start é recebido."""
+        update.message.reply_text("Olá! Eu sou um bot. Como posso ajudar você?")
+
+    def register_handlers(self, dispatcher) -> None:
+        """Registra os manipuladores de comandos no dispatcher."""
+        dispatcher.add_handler(CommandHandler("start", start))
