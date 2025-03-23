@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from src.config.logging_config import configure_logging
 from src.bot.telegram_bot import TelegramBot
 

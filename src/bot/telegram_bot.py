@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 from src.config.settings import TELEGRAM_BOT_TOKEN
@@ -11,8 +12,16 @@ class TelegramBot:
 
     def __init__(self):
         """Inicializa o bot com as configurações fornecidas."""
-        self.token = TELEGRAM_BOT_TOKEN
-        self.application = None
+        if not TELEGRAM_BOT_TOKEN:
+            raise ValueError("O token do bot Telegram não pode ser None ou vazio.")
+        self.token: str = (
+            TELEGRAM_BOT_TOKEN  # Garantir que o token seja sempre uma string
+        )
+        if not self.token:
+            raise ValueError("O token do bot Telegram não pode ser None ou vazio.")
+        self.application: Optional[Application] = (
+            None  # Tipagem explícita para Application
+        )
 
     async def start_command(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
@@ -27,6 +36,8 @@ class TelegramBot:
 
     def register_handlers(self):
         """Registra todos os handlers de comandos e mensagens."""
+        if not self.application:
+            raise RuntimeError("A aplicação do bot não foi inicializada.")
         self.application.add_handler(CommandHandler("start", self.start_command))
         # Adicione outros handlers aqui conforme necessário
 
@@ -40,6 +51,8 @@ class TelegramBot:
 
     def start(self):
         """Inicia o bot e começa a escutar mensagens."""
+        if not self.application:
+            raise RuntimeError("A aplicação do bot não foi inicializada.")
         logger.info("Bot iniciado e escutando mensagens...")
         self.application.run_polling()
 
