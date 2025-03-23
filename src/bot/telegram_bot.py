@@ -1,8 +1,17 @@
 import logging
+from datetime import datetime
 from typing import Optional
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 from src.config.settings import TELEGRAM_BOT_TOKEN
+
+# Configuração do logger para incluir o momento de execução no nome do log
+log_filename = f"telegram_bot_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log"
+logging.basicConfig(
+    filename=log_filename,
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 
 logger = logging.getLogger(__name__)
 

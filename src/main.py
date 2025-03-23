@@ -8,7 +8,7 @@ logger = configure_logging()
 
 def main():
     """Função principal para iniciar a aplicação."""
-    logger.info("Iniciando a aplicação de monitoramento de preços...")
+    logger.info("Iniciando a aplicação")
 
     # Inicializa e executa o bot do Telegram
     bot = TelegramBot()
