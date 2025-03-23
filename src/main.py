@@ -2,7 +2,7 @@ import os
 import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
-from config.settings import load_env
+from src.config.settings import load_env
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO)
