@@ -6,15 +6,15 @@ from src.bot.telegram_bot import TelegramBot
 logger = configure_logging()
 
 
-def main():
+async def main():
     """Função principal para iniciar a aplicação."""
     logger.info("Iniciando a aplicação")
 
     # Inicializa e executa o bot do Telegram
     bot = TelegramBot()
-    asyncio.run(bot.initialize())
-    bot.start()
+    await bot.initialize()
+    await bot.start()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
