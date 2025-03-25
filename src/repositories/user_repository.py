@@ -9,6 +9,13 @@ class UserRepository:
     def __init__(self, database: Database = Database()):
         """Inicializa o repositório com uma instância de Database."""
         self.database = database
+        self.ensure_tables_exist()
+
+    def ensure_tables_exist(self):
+        """Garante que as tabelas necessárias existam no banco de dados."""
+        engine = self.database.get_engine()
+        # Assumindo que Base está disponível por meio do User model
+        User.metadata.create_all(engine)
 
     def find_by_telegram_id(self, telegram_id: int) -> Optional[User]:
         """

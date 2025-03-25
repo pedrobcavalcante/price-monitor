@@ -68,16 +68,36 @@ class TelegramBot:
         await self._application.initialize()
         logger.info("Bot Telegram inicializado com sucesso.")
 
-    async def start(self, use_webhook=False, webhook_url=None, webhook_port=8443):
+    async def start(self):
+        """
+        Inicializa o bot de forma assíncrona.
+        Este método apenas prepara o bot, mas não inicia o polling ou webhook.
+        """
+        app = await self._get_application()
+        logger.info("Bot inicializado e pronto para escutar mensagens.")
+        return app
+
+    def run(self, use_webhook=False, webhook_url=None, webhook_port=8443):
         """
         Inicia o bot e começa a escutar mensagens.
+        Este método é bloqueante e deve ser chamado fora de um event loop assíncrono.
 
         Args:
             use_webhook: Se True, utiliza webhook em vez de polling
             webhook_url: URL para o webhook (necessário se use_webhook=True)
             webhook_port: Porta para o webhook
         """
-        app = await self._get_application()
+        import asyncio
+
+        if self._application is None:
+            # Criar e configurar o bot sincronamente
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(self.initialize())
+            finally:
+                # Não fechamos o loop aqui pois será usado pelo run_polling/run_webhook
+                pass
 
         logger.info("Bot iniciado e escutando mensagens...")
 
@@ -85,7 +105,7 @@ class TelegramBot:
             if not webhook_url:
                 raise ValueError("URL do webhook é necessária quando use_webhook=True")
 
-            app.run_webhook(
+            self._application.run_webhook(
                 listen="0.0.0.0",
                 port=webhook_port,
                 url_path=self._token,
@@ -93,4 +113,4 @@ class TelegramBot:
             )
         else:
             # Executa o run_polling
-            app.run_polling()
+            self._application.run_polling()
