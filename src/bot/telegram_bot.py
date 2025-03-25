@@ -1,3 +1,4 @@
+import asyncio
 from typing import Optional
 from telegram.ext import (
     Application,
@@ -77,40 +78,13 @@ class TelegramBot:
         logger.info("Bot inicializado e pronto para escutar mensagens.")
         return app
 
-    def run(self, use_webhook=False, webhook_url=None, webhook_port=8443):
-        """
-        Inicia o bot e começa a escutar mensagens.
-        Este método é bloqueante e deve ser chamado fora de um event loop assíncrono.
+    def run(self):
+        """Inicia o bot e mantém ele em execução."""
+        # Configura um novo loop de eventos
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
-        Args:
-            use_webhook: Se True, utiliza webhook em vez de polling
-            webhook_url: URL para o webhook (necessário se use_webhook=True)
-            webhook_port: Porta para o webhook
-        """
-        import asyncio
-
-        if self._application is None:
-            # Criar e configurar o bot sincronamente
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                loop.run_until_complete(self.initialize())
-            finally:
-                # Não fechamos o loop aqui pois será usado pelo run_polling/run_webhook
-                pass
-
-        logger.info("Bot iniciado e escutando mensagens...")
-
-        if use_webhook:
-            if not webhook_url:
-                raise ValueError("URL do webhook é necessária quando use_webhook=True")
-
-            self._application.run_webhook(
-                listen="0.0.0.0",
-                port=webhook_port,
-                url_path=self._token,
-                webhook_url=f"{webhook_url}/{self._token}",
-            )
-        else:
-            # Executa o run_polling
-            self._application.run_polling()
+        # Obtém a aplicação e inicia o polling
+        application = loop.run_until_complete(self._get_application())
+        logger.info("Iniciando polling do bot...")
+        application.run_polling()
