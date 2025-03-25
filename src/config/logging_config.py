@@ -2,6 +2,7 @@ import logging
 import sys
 from datetime import datetime
 from typing import Optional
+import os
 
 from src.config.settings import LOG_LEVEL, LOG_FORMAT
 
@@ -18,11 +19,16 @@ def configure_logging(module_name: Optional[str] = None) -> logging.Logger:
     prefix = f"{module_name}_" if module_name else ""
     log_filename = f"{prefix}log_{timestamp}.log"
 
+    # Define o diretório de logs
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)  # Cria a pasta logs se não existir
+    log_filepath = os.path.join(log_dir, log_filename)
+
     # Converte o nível de log de string para constante do logging
     level = getattr(logging, LOG_LEVEL.upper(), logging.INFO)
 
     # Configura o handler para arquivo
-    file_handler = logging.FileHandler(log_filename)
+    file_handler = logging.FileHandler(log_filepath)
     file_handler.setFormatter(logging.Formatter(LOG_FORMAT))
 
     # Configura o handler para console

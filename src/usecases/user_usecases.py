@@ -1,4 +1,3 @@
-import logging
 from typing import Optional, Dict, Any, Tuple
 from telegram import Update
 from src.models.user import User
