@@ -1,3 +1,4 @@
 .env
 __pycache__/
 *.log
+price_monitor.db
