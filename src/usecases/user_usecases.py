@@ -10,8 +10,8 @@ logger = get_logger(__name__)
 class UserUseCases:
     """Casos de uso relacionados a usuários."""
 
-    def __init__(self, user_repository: UserRepository = UserRepository()):
-        self._user_repository: UserRepository = user_repository
+    def __init__(self, user_repository: UserRepository):
+        self._user_repository = user_repository
 
     def verify_or_create_user(self, telegram_data: Dict[str, Any]) -> Optional[User]:
         """

@@ -1,22 +1,13 @@
+from abc import ABC, abstractmethod
 from typing import Optional, Dict, Any
 
-from src.domain.repositories.user_repository_interface import UserRepositoryInterface
-from src.data.datasources.user_datasource import UserDatasource
 from src.models.user import User
 
 
-class UserRepository(UserRepositoryInterface):
-    """Repositório para operações relacionadas a usuários."""
+class UserDatasource(ABC):
+    """Interface para fontes de dados de usuários."""
 
-    def __init__(self, user_datasource: UserDatasource):
-        """
-        Inicializa o repositório com um datasource.
-
-        Args:
-            user_datasource: Implementação de UserDatasource
-        """
-        self._datasource = user_datasource
-
+    @abstractmethod
     def find_by_telegram_id(self, telegram_id: int) -> Optional[User]:
         """
         Busca um usuário pelo ID do Telegram.
@@ -27,8 +18,9 @@ class UserRepository(UserRepositoryInterface):
         Returns:
             Usuário encontrado ou None se não existir
         """
-        return self._datasource.find_by_telegram_id(telegram_id)
+        pass
 
+    @abstractmethod
     def create(self, user_data: Dict[str, Any]) -> User:
         """
         Cria um novo usuário.
@@ -39,8 +31,9 @@ class UserRepository(UserRepositoryInterface):
         Returns:
             Usuário criado
         """
-        return self._datasource.create(user_data)
+        pass
 
+    @abstractmethod
     def update(self, user: User) -> User:
         """
         Atualiza um usuário existente.
@@ -51,4 +44,4 @@ class UserRepository(UserRepositoryInterface):
         Returns:
             Usuário atualizado
         """
-        return self._datasource.update(user)
+        pass
