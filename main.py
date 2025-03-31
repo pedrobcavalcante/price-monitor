@@ -1,4 +1,3 @@
-import asyncio
 from src.config.logging_config import configure_logging
 from src.containers import Container
 
@@ -6,7 +5,7 @@ from src.containers import Container
 logger = configure_logging()
 
 
-async def main():
+def main():
     """Função principal para iniciar o bot."""
     # Inicializar o container de dependências
     container = Container()
@@ -18,13 +17,13 @@ async def main():
     logger.info("Inicializando o bot Telegram...")
     bot = container.telegram_bot()
 
-    # Iniciando o bot
-    await bot.start()
+    # Inicia o bot (método bloqueante)
+    bot.run()
 
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        main()
     except Exception as e:
         logger.error(f"Erro ao executar o bot: {e}")
         raise

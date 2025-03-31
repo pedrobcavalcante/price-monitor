@@ -64,20 +64,17 @@ class TelegramBot:
         )
         logger.info("Handlers registrados com sucesso.")
 
-    async def start(self) -> Application:
-        """Inicializa o bot e retorna a aplicação pronta para uso."""
-        application = await self.initialize()
-        logger.info("Bot inicializado e pronto para escutar mensagens.")
-        return application
-
     def run(self) -> None:
         """Inicia o bot e mantém ele em execução."""
         try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
+            # Cria loop assíncrono e obtém a aplicação
+            loop = asyncio.get_event_loop()
             application = loop.run_until_complete(self.initialize())
+
             logger.info("Iniciando polling do bot...")
-            application.run_polling()
+            # Inicia o polling - método bloqueante que mantém o bot rodando
+            application.run_polling(drop_pending_updates=True)
+
         except Exception as e:
             logger.error(f"Erro ao executar o bot: {e}")
             raise
