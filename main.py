@@ -10,8 +10,8 @@ def main():
     # Inicializar o container de dependências
     container = Container()
 
-    # Criando o banco de dados e as tabelas (se não existirem)
-    container.database().create_tables()
+    # Inicialização do banco de dados através do serviço especializado
+    container.database_initialization_service().initialize()
 
     # Inicializando o bot
     logger.info("Inicializando o bot Telegram...")

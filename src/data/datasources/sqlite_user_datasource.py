@@ -1,27 +1,21 @@
 from typing import Optional, Dict, Any
 
-from src.data.database import Database
 from src.data.datasources.user_datasource import UserDatasource
+from src.data.database_interface import DatabaseInterface
 from src.models.user import User
 
 
 class SQLiteUserDatasource(UserDatasource):
     """Implementação de UserDatasource para SQLite."""
 
-    def __init__(self, database: Database):
+    def __init__(self, database: DatabaseInterface):
         """
-        Inicializa o datasource com uma instância de Database.
-
+        Inicializa o datasource com uma interface de banco de dados.
+1
         Args:
-            database: Instância da classe Database
+            database: Implementação da interface DatabaseInterface
         """
         self.database = database
-        self.ensure_tables_exist()
-
-    def ensure_tables_exist(self) -> None:
-        """Garante que as tabelas necessárias existam no banco de dados."""
-        engine = self.database.get_engine()
-        User.metadata.create_all(engine)
 
     def find_by_telegram_id(self, telegram_id: int) -> Optional[User]:
         """
