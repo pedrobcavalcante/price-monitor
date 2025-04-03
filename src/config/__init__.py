@@ -1,3 +1,3 @@
-# src/config/__init__.py
+# Conteúdo do arquivo: /telegram-bot/telegram-bot/src/config/__init__.py
 
-# This file is intentionally left blank.
+# Este arquivo marca o diretório `config` como um pacote Python.

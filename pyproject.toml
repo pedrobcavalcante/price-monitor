@@ -1,22 +1,37 @@
 [tool.poetry]
-name = "olx-price-monitor"
+name = "price-monitor"
 version = "0.1.0"
-description = "A web scraping project to monitor new postings and price changes for specific products on OLX."
-authors = ["Your Name <your.email@example.com>"]
+description = "Bot de Telegram que roda em background monitorando chamadas"
+authors = ["Seu Nome <seu.email@exemplo.com>"]
 license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-requests = "^2.26.0"
-beautifulsoup4 = "^4.10.0"
-sqlalchemy = "^1.4.25"
-pydantic = "^1.8.2"
+python = "^3.9"
+python-telegram-bot = "^20.8"
+python-dotenv = "^1.0.0"
+loguru = "^0.7.2"
 
-[tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
-black = "^21.7b0"
-mypy = "^0.910"
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.7.0"
+isort = "^5.12.0"
+mypy = "^1.5.1"
+pytest-cov = "^4.1.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true

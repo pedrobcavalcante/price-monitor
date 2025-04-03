@@ -1,59 +1,77 @@
-# OLX Price Monitor
+# README.md
 
-This project is a web scraping application designed to monitor new postings and price changes for specific products on OLX. It follows clean code and clean architecture principles, ensuring maintainability and scalability.
+# Projeto Telegram Bot
 
-## Features
+Este projeto é um bot para o Telegram que responde a comandos, começando com o comando `/start`. O bot é desenvolvido em Python e utiliza as melhores práticas de desenvolvimento, incluindo o uso de Poetry para gerenciamento de dependências, Docker para containerização e um sistema de logging configurado.
 
-- Scrapes product listings from OLX based on specified queries.
-- Monitors price changes and new postings for specific products.
-- Sends notifications for price changes or new postings.
-- Modular architecture separating domain, application, and infrastructure layers.
+## Estrutura do Projeto
 
-## Project Structure
+A estrutura do projeto é a seguinte:
 
 ```
-olx-price-monitor/
-├── src/
-│   ├── domain/                # Domain layer containing business logic
-│   ├── application/           # Application layer handling use cases
-│   ├── infrastructure/        # Infrastructure layer for data access and external services
-│   ├── interfaces/            # Interfaces for CLI and API
-│   └── config/                # Configuration settings
-├── tests/                     # Test suite for unit and integration tests
-├── scripts/                   # Scripts for running the application
-├── pyproject.toml             # Project metadata and dependencies
-├── poetry.lock                # Locked dependencies
-├── .env.example               # Example environment variables
-├── .gitignore                 # Files to ignore in version control
-└── README.md                  # Project documentation
+telegram-bot
+├── pyproject.toml          # Configuração do Poetry
+├── poetry.lock             # Dependências bloqueadas
+├── .env.example            # Exemplo de variáveis de ambiente
+├── .env                    # Variáveis de ambiente reais
+├── Dockerfile              # Instruções para construir a imagem Docker
+├── docker-compose.yml      # Orquestração dos serviços
+├── README.md               # Documentação do projeto
+├── src                     # Código fonte do bot
+│   ├── __init__.py
+│   ├── main.py             # Ponto de entrada da aplicação
+│   ├── bot                 # Módulo do bot
+│   │   ├── __init__.py
+│   │   ├── handlers.py     # Manipuladores de comandos
+│   │   └── telegram_bot.py # Lógica principal do bot
+│   ├── config              # Configurações do projeto
+│   │   ├── __init__.py
+│   │   ├── settings.py     # Configurações e variáveis de ambiente
+│   │   └── logging_config.py # Configuração de logging
+│   └── domain              # Entidades do domínio
+│       ├── __init__.py
+│       └── entities.py     # Definições de entidades
+└── tests                   # Testes do projeto
+    ├── __init__.py
+    ├── unit                # Testes unitários
+    │   └── __init__.py
+    └── integration         # Testes de integração
+        └── __init__.py
 ```
 
-## Installation
+## Configuração
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd olx-price-monitor
+1. **Clone o repositório**:
+   ```bash
+   git clone <URL_DO_REPOSITORIO>
+   cd telegram-bot
    ```
 
-2. Install dependencies using Poetry:
-   ```
+2. **Instale as dependências**:
+   ```bash
    poetry install
    ```
 
-3. Set up environment variables by copying `.env.example` to `.env` and updating the values as needed.
+3. **Configure as variáveis de ambiente**:
+   - Renomeie o arquivo `.env.example` para `.env` e preencha com suas chaves privadas e tokens.
 
-## Usage
+4. **Execute o bot**:
+   ```bash
+   poetry run python src/main.py
+   ```
 
-To run the price monitoring script, use the following command:
+## Docker
+
+Para executar o bot em um contêiner Docker, utilize o seguinte comando:
+
+```bash
+docker-compose up --build
 ```
-poetry run python scripts/run_monitor.py
-```
 
-## Contributing
+## Contribuição
 
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
 
-## License
+## Licença
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+Este projeto está licenciado sob a MIT License. Veja o arquivo LICENSE para mais detalhes.
